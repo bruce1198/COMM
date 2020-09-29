@@ -41,6 +41,9 @@ class Group {
         this.devices = []
     }
     assignJob(type, res) {
+        for(var i=0; i<this.devices.length; i++) {
+            console.log(i, this.devices[i].inUse)
+        }
         var message = 'error'
         console.log('assign job!')
         const dirPath =  path.join(pcnnPath, 'codegen', type)
@@ -59,9 +62,14 @@ class Group {
             }
             // dont count the server.py
             const numOfDevices = files.length - 1
-            if(this.devices.length < numOfDevices) {
-                console.log('Num of devices is not enough to assign the inference!')
-                message = 'Num of devices is not enough to assign the inference!'
+            var available = 0
+            for(var i=0; i<this.devices.length; i++) {
+                if(!this.devices[i].inUse)
+                    available++;
+            }
+            if(available < numOfDevices) {
+                console.log('Num of available devices is not enough to assign the inference!')
+                message = 'Num of available devices is not enough to assign the inference!'
                 res[0].writeHead(200, {
                     'Content-Type': 'application/json'
                 })
@@ -74,34 +82,22 @@ class Group {
             // send .py file to the selected devices
             // TODO: need to generate distinct port for each calculation
             const port = 9950
+            var deviceIdx = 0
             for(var i=0; i<numOfDevices; i++) {
+                if(this.devices[i].inUse)
+                    continue
                 this.devices[i].idx = i 
+                this.devices[i].socket.on('over', (msg)=>  {
+                    console.log(msg.clientid, 'over')
+                    this.devices[msg.clientid].inUse = false
+                })
+                this.devices[i].inUse = true
                 this.devices[i].socket.emit('init', {
-                    id: `${i}`,
+                    id: `${deviceIdx}`,
+                    clientid: i,
                     port: port
                 })
-                // const filePath = dirPath + '/device'+i+'.py'
-                // const modelPath = '../PCNN/models/'+type
-                // try {
-                //     if (fs.existsSync(filePath)) {
-                //         var stream = ss.createStream()
-                //         stream.on('end', function () {
-                //             console.log('file sent')
-                //         })
-                //         ss(this.devices[i].socket).emit('sending', stream)
-                //         fs.createReadStream(filePath).pipe(stream)
-                //     }
-                //     if (fs.existsSync(modelPath)) {
-                //         var stream = ss.createStream()
-                //         stream.on('end', function () {
-                //             console.log('file sent')
-                //         })
-                //         ss(this.devices[i].socket).emit('sendmodel', stream)
-                //         fs.createReadStream(filePath).pipe(stream)
-                //     }
-                // } catch(err) {
-                //     console.error(err)
-                // }
+                deviceIdx++
             }
 
             // start pcnn server
@@ -167,6 +163,10 @@ io.on('connection', (socket) => {
     console.log(socket.id, socket.handshake.address, 'connect!')
     // socket.send('Hello, device!')
 
+    socket.on('model-check', (msg) => {
+
+    })
+
     socket.on('disconnect', () => {
         group.leave(socket)
     })
@@ -207,6 +207,30 @@ app.post('/inference', (req, res) => {
     else {
         res.send('Only Alexnet is acceptible!')
     }
+})
+
+app.get('/download/:model', (req, res) => {
+    var model = req.params.model
+    var filePath = path.join(pcnnPath, 'models', model);
+    var stat = fs.statSync(filePath)
+    res.writeHead(200, {
+        'Content-Type': 'application/binary',
+        'Content-Length': stat.size
+    });
+
+    var readStream = fs.createReadStream(filePath)
+    readStream.pipe(res)
+})
+
+app.get('/download', (req, res) => {
+    fs.readFile('./pages/download/index.html', function (err, html) {
+        if (err) {
+            throw err; 
+        }
+        res.writeHeader(200, {"Content-Type": "text/html"})
+        res.write(html); 
+        res.end()
+    })
 })
 
 server.listen(port, () => {

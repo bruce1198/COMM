@@ -18,10 +18,13 @@ const socket = io.connect(`${host}:${port}`)
 
 device = -1
 socket.on('connect', () => {
-    console.log('connet to server')
+    console.log('Connet to server')
+    console.log('Please make sure the local models is same as the server\'s one')
+    console.log('For Downloading, visit: '+host+'/download')
 
     socket.on('init', (msg) => {
         const deviceIdx = msg.id
+        const clientid = msg.clientid
         const port = msg.port
         const devicePath = path.join(pcnnPath,'codegen', 'alexnet', `device${deviceIdx}.py`)
         console.log('device: '+deviceIdx)
@@ -39,10 +42,14 @@ socket.on('connect', () => {
                 console.log(data.toString())
             })
             python.on('close', (code) => {
-    
+                console.log('python finish')
                 if(code == 0) {
                     message = 'success'
                 }
+                socket.emit('over', {
+                    clientid: clientid,
+                    msg: message
+                })
             })
         } catch(err) {
             message = err

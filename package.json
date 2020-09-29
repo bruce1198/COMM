@@ -12,6 +12,8 @@
     "download-git-repo": "^3.0.2",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
+    "mime-type": "^4.0.0",
+    "mime-types": "^2.1.27",
     "socket.io": "^2.3.0",
     "socket.io-stream": "^0.9.1"
   }
