@@ -7,8 +7,10 @@ const path = require('path')
 const ss = require('socket.io-stream')
 const fs = require('fs')
 const download = require('download-git-repo')
-const options = { /* ... */ };
-const io = require('socket.io')(server, options)
+const io = require('socket.io')(server)
+const io2 = require('socket.io')(server, {
+    path: '/realtime'
+})
 const config = require('./config')
 
 const serverhost = config.serverhost
@@ -172,6 +174,21 @@ io.on('connection', (socket) => {
     })
 })
 
+io2.on('connection', function (socket) {
+
+    console.log('a realtime client connect')
+    const interval = setInterval(()=>{
+        socket.emit('update', {
+            msg: 'update message!'
+        })
+    }, 5000)
+
+    socket.on('message', function (message) {
+        socket.send(message)
+    })
+
+})
+
 app.use(
     fileupload(),
 )
@@ -224,6 +241,17 @@ app.get('/download/:model', (req, res) => {
 
 app.get('/download', (req, res) => {
     fs.readFile('./pages/download/index.html', function (err, html) {
+        if (err) {
+            throw err; 
+        }
+        res.writeHeader(200, {"Content-Type": "text/html"})
+        res.write(html); 
+        res.end()
+    })
+})
+
+app.get('/status', (req, res) => {
+    fs.readFile('./pages/status/index.html', function (err, html) {
         if (err) {
             throw err; 
         }
