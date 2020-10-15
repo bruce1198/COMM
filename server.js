@@ -31,21 +31,19 @@ if(!fs.existsSync(pcnnPath)) {
 
 
 class Device {
-    constructor(socket) {
+    constructor(socket, pk) {
         this.inUse = false
         this.socket = socket
-        this.idx = -1
+        this.idx = pk
     }
 }
 
 class Group {
     constructor() {
+        this.pk = 0
         this.devices = []
     }
     assignJob(type, res) {
-        for(var i=0; i<this.devices.length; i++) {
-            console.log(i, this.devices[i].inUse)
-        }
         var message = 'error'
         console.log('assign job!')
         const dirPath =  path.join(pcnnPath, 'codegen', type)
@@ -65,9 +63,13 @@ class Group {
             // dont count the server.py
             const numOfDevices = files.length - 1
             var available = 0
+            var availableDevices = []
             for(var i=0; i<this.devices.length; i++) {
-                if(!this.devices[i].inUse)
-                    available++;
+                if(!this.devices[i].inUse) {
+                    console.log(this.devices[i].idx)
+                    available++
+                    availableDevices.push(this.devices[i])
+                }
             }
             if(available < numOfDevices) {
                 console.log('Num of available devices is not enough to assign the inference!')
@@ -83,18 +85,17 @@ class Group {
             }
             // send .py file to the selected devices
             // TODO: need to generate distinct port for each calculation
-            const port = 9950
+            const port = 9950 + Math.floor(Math.random() * 1000)
             var deviceIdx = 0
             for(var i=0; i<numOfDevices; i++) {
-                if(this.devices[i].inUse)
-                    continue
-                this.devices[i].idx = i 
-                this.devices[i].socket.on('over', (msg)=>  {
-                    console.log(msg.clientid, 'over')
-                    this.devices[msg.clientid].inUse = false
+                console.log(i)
+                availableDevices[i].idx = i 
+                availableDevices[i].socket.on('over', (msg)=>  {
+                    // console.log(msg.clientid, 'over')
+                    availableDevices[msg.clientid].inUse = false
                 })
-                this.devices[i].inUse = true
-                this.devices[i].socket.emit('init', {
+                availableDevices[i].inUse = true
+                availableDevices[i].socket.emit('init', {
                     id: `${deviceIdx}`,
                     clientid: i,
                     port: port
@@ -137,7 +138,8 @@ class Group {
         })
     }
     join(client) {
-        this.devices.push(new Device(client))
+        this.devices.push(new Device(client, this.pk))
+        this.pk++
     }
     leave(client) {
         var index = -1
@@ -177,11 +179,26 @@ io.on('connection', (socket) => {
 io2.on('connection', function (socket) {
 
     console.log('a realtime client connect')
-    const interval = setInterval(()=>{
-        socket.emit('update', {
-            msg: 'update message!'
+    var devices = []
+    group.devices.forEach((device) => {
+        devices.push({
+            inUse: device.inUse,
+            socketid: device.socket.id,
+            addr: device.socket.handshake.address
         })
-    }, 5000)
+    })
+    socket.emit('update', devices)
+    setInterval(()=>{
+        var devices = []
+        group.devices.forEach((device) => {
+            devices.push({
+                inUse: device.inUse,
+                socketid: device.socket.id,
+                addr: device.socket.handshake.address
+            })
+        })
+        socket.emit('update', devices)
+    }, 1000)
 
     socket.on('message', function (message) {
         socket.send(message)
@@ -228,12 +245,13 @@ app.post('/inference', (req, res) => {
 
 app.get('/download/:model', (req, res) => {
     var model = req.params.model
-    var filePath = path.join(pcnnPath, 'models', model);
+    var filePath = path.join(pcnnPath, 'models', model)
     var stat = fs.statSync(filePath)
+    // res.set('Content-Disposition', 'attachment;filename='+model+'.model')
     res.writeHead(200, {
-        'Content-Type': 'application/binary',
+        'Content-Type': 'application/octet-stream',
         'Content-Length': stat.size
-    });
+    })
 
     var readStream = fs.createReadStream(filePath)
     readStream.pipe(res)

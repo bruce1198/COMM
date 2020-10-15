@@ -4,16 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCNN-Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="./style.css">
+    
 </head>
 <body>
     <iframe style="display:none;"></iframe>
-    <h1>Connected Clients</h1>
-    <ul>
-        
-    </ul>
+    <div class="container">
+        <h1>Connected Clients</h1>
+        <ul class="collection">
+            <!-- <li class="collection-item avatar">
+                <div class="circle img"></div>
+                <span class="title">Client ${i}</span>
+                <p>ID: ${device.socketid}<br>
+                   Addr: ${device.addr.split(':')[3]}
+                </p>
+                <a class="secondary-content"><i class="material-icons"></i></a>
+            </li> -->
+        </ul>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./main.js"></script>
 </body>
 </html>
