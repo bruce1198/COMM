@@ -20,7 +20,7 @@ device = -1
 socket.on('connect', () => {
     console.log('Connet to server')
     console.log('Please make sure the local models is same as the server\'s one')
-    console.log('For Downloading, visit: '+host+':'+port+'/download')
+    console.log('For Downloading, visit: '+`${host}:${port}`+'/download')
 
     socket.on('init', (msg) => {
         const deviceIdx = msg.id
