@@ -20,13 +20,14 @@ device = -1
 socket.on('connect', () => {
     console.log('Connet to server')
     console.log('Please make sure the local models is same as the server\'s one')
-    console.log('For Downloading, visit: '+host+'/download')
+    console.log('For Downloading, visit: '+host+':'+port+'/download')
 
     socket.on('init', (msg) => {
         const deviceIdx = msg.id
         const clientid = msg.clientid
         const port = msg.port
-        const devicePath = path.join(pcnnPath,'codegen', 'alexnet', `device${deviceIdx}.py`)
+        const type = msg.type
+        const devicePath = path.join(pcnnPath,'codegen', type, `device${deviceIdx}.py`)
         console.log('device: '+deviceIdx)
         console.log('port: '+port)
         var message = 'error'

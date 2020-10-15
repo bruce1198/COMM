@@ -97,7 +97,8 @@ class Group {
                 this.devices[i].socket.emit('init', {
                     id: `${deviceIdx}`,
                     clientid: i,
-                    port: port
+                    port: port,
+                    type: type,
                 })
                 deviceIdx++
             }
