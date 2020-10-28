@@ -9,8 +9,10 @@ $('#submit').click(() => {
         return
     }
     var model = $('#model').val()
+    var mode = $('#mode').val()
     var formdata = new FormData()
     formdata.append('model', model)
+    formdata.append('mode', mode)
     formdata.append('photo', file)
     $.ajax({
         type: 'post',
@@ -20,6 +22,9 @@ $('#submit').click(() => {
         contentType: false,
         success: function(response) {
             console.log(response)
+            $('#class').text(response['msg'])
+            $('#num').text(response['numOfDevices'])
+            $('#time').text(response['time'])
         }
     })
     // var img = new Image()

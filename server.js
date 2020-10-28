@@ -43,6 +43,46 @@ class Group {
         this.pk = 0
         this.devices = []
     }
+    runOrigin(type, res) {
+        var message = 'error'
+        console.log('run origin!')
+        const serverPath = path.join(pcnnPath, 'model generator', 'alex.py')
+        const imagePath = path.join(__dirname, 'images', 'input.jpg')
+        var msgbuilder = ''
+        try {
+            const startTime = new Date().getTime()
+            const python = spawn('python', [serverPath, imagePath])
+            python.on('error', function(err) {
+                message = err
+            })
+            python.stdout.on('data', function (data) {
+                msgbuilder += data.toString()
+                console.log(data.toString())
+            })
+            python.stderr.on('data', function(data) {
+                message = data.toString()
+                console.log(data.toString())
+            })
+            python.on('close', (code) => {
+                if(code == 0) {
+                    const totalTime = new Date().getTime() - startTime
+                    const str = JSON.parse(msgbuilder.substring(0, msgbuilder.length - 1))
+                    res[0].writeHead(200, {
+                        'Content-Type': 'application/json'
+                    })
+                    res[0].end(JSON.stringify({
+                        model: type,
+                        mode: 'origin',
+                        msg: str,
+                        time: totalTime,
+                        numOfDevices: 1
+                    }))
+                }
+            })
+        } catch(err) {
+            message = err
+        }
+    }
     assignJob(type, res) {
         var message = 'error'
         console.log('assign job!')
@@ -84,8 +124,44 @@ class Group {
                 return 
             }
             // send .py file to the selected devices
-            // TODO: need to generate distinct port for each calculation
-            const port = 9954 + Math.floor(Math.random() * 1000)
+            const port = 30000 + Math.floor(Math.random() * 1000)
+            // start pcnn server
+            const serverPath = path.join(pcnnPath, 'codegen', type, 'server.py')
+            const imagePath = path.join(__dirname, 'images', 'input.jpg')
+            var msgbuilder = ''
+            try {
+                const startTime = new Date().getTime()
+                const python = spawn('python', [serverPath, numOfDevices, serverhost, port, imagePath])
+                python.on('error', function(err) {
+                    message = err
+                })
+                python.stdout.on('data', function (data) {
+                    msgbuilder += data.toString()
+                    console.log(data.toString())
+                })
+                python.stderr.on('data', function(data) {
+                    message = data.toString()
+                    console.log(data.toString())
+                })
+                python.on('close', (code) => {
+                    if(code == 0) {
+                        const totalTime = new Date().getTime() - startTime
+                        const str = JSON.parse(msgbuilder.substring(0, msgbuilder.length - 1))
+                        res[0].writeHead(200, {
+                            'Content-Type': 'application/json'
+                        })
+                        res[0].end(JSON.stringify({
+                            model: type,
+                            mode: 'parallelized',
+                            msg: str,
+                            time: totalTime,
+                            numOfDevices: numOfDevices
+                        }))
+                    }
+                })
+            } catch(err) {
+                message = err
+            }
             var deviceIdx = 0
             for(var i=0; i<numOfDevices; i++) {
                 console.log(i)
@@ -102,39 +178,6 @@ class Group {
                     type: type,
                 })
                 deviceIdx++
-            }
-
-            // start pcnn server
-            const serverPath = path.join(pcnnPath, 'codegen', type, 'server.py')
-            const imagePath = path.join(__dirname, 'images', 'input.jpg')
-            var msgbuilder = ''
-            try {
-                const python = spawn('python', [serverPath, numOfDevices, serverhost, port, imagePath])
-                python.on('error', function(err) {
-                    message = err
-                })
-                python.stdout.on('data', function (data) {
-                    msgbuilder += data.toString()
-                    console.log(data.toString())
-                })
-                python.stderr.on('data', function(data) {
-                    message = data.toString()
-                    console.log(data.toString())
-                })
-                python.on('close', (code) => {
-                    if(code == 0) {
-                        const str = msgbuilder.substring(0, msgbuilder.length - 1)
-                        res[0].writeHead(200, {
-                            'Content-Type': 'application/json'
-                        })
-                        res[0].end(JSON.stringify({
-                            model: type,
-                            msg: str 
-                        }))
-                    }
-                })
-            } catch(err) {
-                message = err
             }
         })
     }
@@ -236,7 +279,10 @@ app.post('/inference', (req, res) => {
                 res.end(JSON.stringify({ status: 'error', message: error }))
                 return
             }
-            group.assignJob(req.body.model, [res])
+            if(req.body.mode == 'origin')
+                group.runOrigin(req.body.model, [res])
+            else if(req.body.mode == 'parallelized')
+                group.assignJob(req.body.model, [res])
         })
     }
     else {

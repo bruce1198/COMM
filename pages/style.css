@@ -1,8 +1,9 @@
 .upload-blk {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 150px auto 20px auto;
+    width: 420px;
+}
+.result-blk {
+    margin: 0 auto;
     width: 420px;
 }
 .preview {
@@ -77,6 +78,9 @@ button {
 
 @media (max-width: 500px) {
     .upload-blk {
+        width: 100vw;
+    }
+    .result-blk {
         width: 100vw;
     }
 }

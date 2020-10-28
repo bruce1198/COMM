@@ -20,7 +20,17 @@
             <option disabled value="vgg16">VGG16</option>
             <option disabled value="vgg19">VGG19</option>
         </select>
+        <select id="mode">
+            <option value="origin">Origin</option>
+            <option value="parallelized">Parallelized</option>
+        </select>
         <button id="submit">Inference</button>
+    </div>
+    <div class="result-blk">
+        <h2>Result</h2>
+        <p id="class">Class: 587</p>
+        <p id="num">Number Of Device: 2</p>
+        <p id="time">Inference Time: 3387ms</p>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./main.js"></script>
