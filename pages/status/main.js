@@ -9,7 +9,8 @@ socket.on('connect', () => {
         var i = 1
         devices.forEach(device => {
             $('ul').append($('<li></li>', {class: 'collection-item avatar'}).html(
-                `<div class="circle img"></div>
+                `
+                <div class="circle img"></div>
                 <span class="title">Client ${i}</span>
                 <p>ID: ${device.socketid}<br>
                    Addr: ${device.addr.split(':')[3]}
@@ -17,6 +18,10 @@ socket.on('connect', () => {
                 <a class="secondary-content ${device.inUse?'inUse':''}"><i class="material-icons"></i></a>`
                 )
             )
+            $('.hover').click(function() {
+                socketId = $(this).siblings()
+                console.log(socketId)
+            })
             i++
         })
     })

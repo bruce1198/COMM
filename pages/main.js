@@ -22,51 +22,13 @@ $('#submit').click(() => {
         contentType: false,
         success: function(response) {
             console.log(response)
-            $('#class').text(response['msg'])
+            $('#class').text(response['msg']['index'])
             $('#num').text(response['numOfDevices'])
-            $('#time').text(response['time'])
+            $('#total-time').text(response['time'])
+            $('#io-time').text(response['msg']['load_time'])
+            $('#cpu-time').text(response['msg']['cal_time'])
         }
     })
-    // var img = new Image()
-    // var model = $('#model').val()
-    // var size
-    // switch(model) {
-    //     case 'yolo':
-    //         size = 224
-    //     case 'alexnet':
-    //         size = 224
-    //     case 'vgg16':
-    //         size = 224
-    //     case 'vgg19':
-    //         size = 224
-    // }
-    // img.onload = function() {
-    //     var canvas = document.createElement('canvas')
-    //     var ctx = canvas.getContext('2d')
-    //     canvas.width = size
-    //     canvas.height = size
-    //     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-    //     var data = canvas.toDataURL('image/jpg')
-    //     fetch(data)
-    //     .then((res) => {return res.arrayBuffer()})
-    //     .then((buf) => {return new File([buf], 'input.jpg', {type:'image/jpeg'})})
-    //     .then((file) => {
-    //         var formdata = new FormData()
-    //         formdata.append('model', model)
-    //         formdata.append('photo', file)
-    //         $.ajax({
-    //             type: 'post',
-    //             url: 'inference',
-    //             data: formdata,
-    //             processData: false,
-    //             contentType: false,
-    //             success: function(response) {
-    //                 console.log(response)
-    //             }
-    //         })
-    //     })
-    // }
-    // img.src = src
 })
 $('#uploader').on('change', function(e) {
     var input = this;

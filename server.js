@@ -134,10 +134,32 @@ class Group {
                 const python = spawn('python', [serverPath, numOfDevices, serverhost, port, imagePath])
                 python.on('error', function(err) {
                     message = err
+                    console.log(err.message)
                 })
                 python.stdout.on('data', function (data) {
-                    msgbuilder += data.toString()
-                    console.log(data.toString())
+                    // if(data.toString() == 'ready\n') {
+                    //     console.log('server ready!')
+                    //     var deviceIdx = 0
+                    //     for(var i=0; i<numOfDevices; i++) {
+                    //         availableDevices[i].idx = i 
+                    //         availableDevices[i].socket.on('over', (msg)=>  {
+                    //             // console.log(msg.clientid, 'over')
+                    //             availableDevices[msg.clientid].inUse = false
+                    //         })
+                    //         availableDevices[i].inUse = true
+                    //         availableDevices[i].socket.emit('init', {
+                    //             id: `${deviceIdx}`,
+                    //             clientid: i,
+                    //             port: port,
+                    //             type: type,
+                    //         })
+                    //         deviceIdx++
+                    //     }
+                    // }
+                    // else {
+                        msgbuilder += data.toString()
+                        console.log(data.toString())
+                    // }
                 })
                 python.stderr.on('data', function(data) {
                     message = data.toString()
@@ -164,7 +186,6 @@ class Group {
             }
             var deviceIdx = 0
             for(var i=0; i<numOfDevices; i++) {
-                console.log(i)
                 availableDevices[i].idx = i 
                 availableDevices[i].socket.on('over', (msg)=>  {
                     // console.log(msg.clientid, 'over')
@@ -184,6 +205,9 @@ class Group {
     join(client) {
         this.devices.push(new Device(client, this.pk))
         this.pk++
+    }
+    remove(socketId) {
+        console.log(socketId)
     }
     leave(client) {
         var index = -1
@@ -243,6 +267,10 @@ io2.on('connection', function (socket) {
         })
         socket.emit('update', devices)
     }, 1000)
+
+    socket.on('remove-client', function(clientId) {
+        group.remove(clientId)
+    })
 
     socket.on('message', function (message) {
         socket.send(message)
