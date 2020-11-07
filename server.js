@@ -168,7 +168,7 @@ class Group {
                 python.on('close', (code) => {
                     if(code == 0) {
                         const totalTime = new Date().getTime() - startTime
-                        const str = JSON.parse(msgbuilder.substring(0, msgbuilder.length - 1))
+                        const str = JSON.parse(msgbuilder.replace('\n', ''))
                         // const str = ''
                         res[0].writeHead(200, {
                             'Content-Type': 'application/json'
@@ -321,7 +321,6 @@ app.post('/infer', (req, res) => {
 
 app.get('/download/:model', (req, res) => {
     var model = req.params.model
-    console.log(model)
     var filePath = path.join(pcnnPath, 'models', model+'.h5')
     var stat = fs.statSync(filePath)
     res.set('Content-Disposition', 'attachment;filename='+model+'.h5')
