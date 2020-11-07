@@ -169,6 +169,7 @@ class Group {
                     if(code == 0) {
                         const totalTime = new Date().getTime() - startTime
                         const str = JSON.parse(msgbuilder.substring(0, msgbuilder.length - 1))
+                        // const str = ''
                         res[0].writeHead(200, {
                             'Content-Type': 'application/json'
                         })
@@ -293,7 +294,7 @@ app.get('/', (req, res) => {
     })
 })
 
-app.post('/inference', (req, res) => {
+app.post('/infer', (req, res) => {
     // console.log(req)
     if(req.body.model === 'alexnet') {
         const image = req.files.photo
@@ -320,9 +321,10 @@ app.post('/inference', (req, res) => {
 
 app.get('/download/:model', (req, res) => {
     var model = req.params.model
-    var filePath = path.join(pcnnPath, 'models', model)
+    console.log(model)
+    var filePath = path.join(pcnnPath, 'models', model+'.h5')
     var stat = fs.statSync(filePath)
-    // res.set('Content-Disposition', 'attachment;filename='+model+'.model')
+    res.set('Content-Disposition', 'attachment;filename='+model+'.h5')
     res.writeHead(200, {
         'Content-Type': 'application/octet-stream',
         'Content-Length': stat.size
@@ -330,28 +332,6 @@ app.get('/download/:model', (req, res) => {
 
     var readStream = fs.createReadStream(filePath)
     readStream.pipe(res)
-})
-
-app.get('/download', (req, res) => {
-    fs.readFile('./pages/download/index.html', function (err, html) {
-        if (err) {
-            throw err; 
-        }
-        res.writeHeader(200, {"Content-Type": "text/html"})
-        res.write(html); 
-        res.end()
-    })
-})
-
-app.get('/status', (req, res) => {
-    fs.readFile('./pages/status/index.html', function (err, html) {
-        if (err) {
-            throw err; 
-        }
-        res.writeHeader(200, {"Content-Type": "text/html"})
-        res.write(html); 
-        res.end()
-    })
 })
 
 server.listen(port, () => {

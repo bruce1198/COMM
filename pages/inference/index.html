@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCNN-Inference</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="upload-blk">
+        <div class="preview float-left"><span>Preview</span><img id="previewer"></div>
+        <div class="setting float-left">
+            <h2>Setting</h2>
+            <input type="file" id="uploader" aria-label="File browser example">
+            <div class="file">
+                <div>Choose file...</div>
+                <div>Browse</div>
+            </div>
+            <select id="model">
+                <option disabled value="yolo">Yolov2</option>
+                <option selected value="alexnet">AlexNet</option>
+                <option disabled value="vgg16">VGG16</option>
+                <option disabled value="vgg19">VGG19</option>
+            </select>
+            <select id="mode">
+                <option value="origin">Origin</option>
+                <option value="parallelized">Parallelized</option>
+            </select>
+            <button id="submit">Inference</button>
+        </div>
+    </div>
+    <div class="result-blk">
+        <h2>Result</h2>
+        <p>Class: <span id="class">587</span></p>
+        <p># of Device: <span id="num">2</span></p>
+        <p>Total Time: <span id="total-time">2</span>ms</p>
+        <p>I/O   Time: <span id="io-time">2</span>ms</p>
+        <p>CPU   Time: <span id="cpu-time">2</span>ms</p>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./main.js"></script>
+</body>
+</html>
