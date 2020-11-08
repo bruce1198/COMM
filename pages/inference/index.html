@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCNN-Inference</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="upload-blk">
+        <div class="preview float-left"><span>Preview</span><img id="previewer" class="materialboxed"></div>
+        <div class="setting float-left">
+            <h2>Setting</h2>
+            <input type="file" id="uploader" aria-label="File browser example">
+            <div class="file">
+                <div id="chosen">Choose file...</div>
+                <div>Browse</div>
+            </div>
+            <div class="select input-field col s12">
+                <select id="model">
+                  <option value="" disabled>Choose the model</option>
+                  <option disabled value="yolo">Yolov2</option>
+                  <option selected value="alexnet">AlexNet</option>
+                  <option disabled value="vgg16">VGG16</option>
+                  <option disabled value="vgg19">VGG19</option>
+                </select>
+                <label>Model Select</label>
+            </div>
+            <div class="select input-field col s12">
+                <select id="mode">
+                  <option value="" disabled>Choose the Mode</option>
+                  <option selected value="origin">Origin</option>
+                  <option value="parallelized">Parallelized</option>
+                </select>
+                <label>Mode Select</label>
+            </div>
+            <!-- <select id="mode">
+                <option value="origin">Origin</option>
+                <option value="parallelized">Parallelized</option>
+            </select> -->
+            <a class="waves-effect waves-light btn-large" id="submit">Inference</a>
+        </div>
+    </div>
+    <div class="result-blk">
+        <div id="progress" class="preloader-wrapper active">
+            <div class="spinner-layer spinner-red-only">
+              <div class="circle-clipper left">
+                <div class="circle"></div>
+              </div><div class="gap-patch">
+                <div class="circle"></div>
+              </div><div class="circle-clipper right">
+                <div class="circle"></div>
+              </div>
+            </div>
+        </div>
+        <div class="result">
+            <h2>Result</h2>
+            <p>Class: <span id="class">587</span></p>
+            <p># of Device: <span id="num">2</span></p>
+            <p>Total Time: <span id="total-time">2</span>ms</p>
+            <p>I/O   Time: <span id="io-time">2</span>ms</p>
+            <p>CPU   Time: <span id="cpu-time">2</span>ms</p>
+            <canvas></canvas>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="./main.js"></script>
+</body>
+</html>

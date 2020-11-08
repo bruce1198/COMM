@@ -1,39 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCNN</title>
+    <title>CNN Automated Parallelized</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="upload-blk">
-        <div class="preview"><span>Preview</span><img id="previewer"></div>
-        <input type="file" id="uploader" aria-label="File browser example">
-        <div class="file">
-            <div>Choose file...</div>
-            <div>Browse</div>
+    <!-- <nav>
+        <ul>
+            <li class="brand">PCNN</li>
+            <li>Inference</li>
+            <li>Status</li>
+            <li>Download</li>
+        </ul>
+    </nav> -->
+    <nav>
+        <div class="nav-wrapper">
+          <a class="brand-logo brand left pointer">PCNN</a>
+          <ul id="nav-mobile" class="right">
+            <li><a href="">Inference</a></li>
+            <li><a href="">Status</a></li>
+            <li><a href="">Download</a></li>
+          </ul>
         </div>
-        <select id="model">
-            <option disabled value="yolo">Yolov2</option>
-            <option selected value="alexnet">AlexNet</option>
-            <option disabled value="vgg16">VGG16</option>
-            <option disabled value="vgg19">VGG19</option>
-        </select>
-        <select id="mode">
-            <option value="origin">Origin</option>
-            <option value="parallelized">Parallelized</option>
-        </select>
-        <button id="submit">Inference</button>
-    </div>
-    <div class="result-blk">
-        <h2>Result</h2>
-        <p>Class: <span id="class">587</span></p>
-        <p># of Device: <span id="num">2</span></p>
-        <p>Total Time: <span id="total-time">2</span>ms</p>
-        <p>I/O   Time: <span id="io-time">2</span>ms</p>
-        <p>CPU   Time: <span id="cpu-time">2</span>ms</p>
-    </div>
+    </nav>
+    <main>
+        <iframe src="/home" frameborder="0"></iframe>
+    </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./main.js"></script>
 </body>

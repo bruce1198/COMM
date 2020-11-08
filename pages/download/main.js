@@ -1,4 +1,5 @@
-$('li').click(function() {
+$('li').click(function(e) {
+    e.preventDefault()
     var idx = $(this).index('li')
     var model
     switch(idx) {
@@ -15,5 +16,5 @@ $('li').click(function() {
             model = 'vgg19'
             break
     }
-    $('iframe').attr('src', '/download/'+model)
+    window.location.href = '/download/'+model
 })

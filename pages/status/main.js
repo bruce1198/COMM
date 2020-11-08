@@ -3,7 +3,7 @@ const socket = io({
 })
 
 socket.on('connect', () => {
-    console.log('Connect to server')
+    // console.log('Connect to server')
     socket.on('update', (devices) => {
         $('ul').empty()
         var i = 1
