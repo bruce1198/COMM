@@ -2,9 +2,15 @@ html, body {
     padding: 0;
     margin: 0;
 }
+* {
+    font-family: 'Open Sans', sans-serif;
+}
 .container {
     width: 80vw;
-    margin: 0 10vw;
+    padding: 20px 10vw;
+}
+ul.collection {
+    margin: 0;
 }
 li:hover .hover {
     display: block;

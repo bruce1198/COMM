@@ -4,20 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CNN Automated Parallelized</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <nav>
+    <!-- <nav>
         <ul>
             <li class="brand">PCNN</li>
             <li>Inference</li>
             <li>Status</li>
             <li>Download</li>
         </ul>
+    </nav> -->
+    <nav>
+        <div class="nav-wrapper">
+          <a class="brand-logo brand left pointer">PCNN</a>
+          <ul id="nav-mobile" class="right">
+            <li><a href="">Inference</a></li>
+            <li><a href="">Status</a></li>
+            <li><a href="">Download</a></li>
+          </ul>
+        </div>
     </nav>
     <main>
-        <iframe src="/home" frameborder="0" onload="frameOnload(this)"></iframe>
+        <iframe src="/home" frameborder="0"></iframe>
     </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./main.js"></script>

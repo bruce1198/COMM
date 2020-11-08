@@ -5,39 +5,21 @@ html, body {
 * {
     font-family: 'Open Sans', sans-serif;
 }
+.pointer {
+    cursor: pointer;
+}
 nav {
     position: fixed;
-    width: 100%;
-    height: 60px;
     background-color: #32bd9a;
     opacity: 0.95;
     box-shadow: 0 0 5px #00000070;
 }
-nav ul {
-    margin: 0;
-}
-nav li {
-    float: left;
-    list-style-type: none;
-    height: 60px;
-    line-height: 60px;
-    margin-right: 20px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-nav li:hover {
-    color: wheat;
-}
-nav li:nth-child(1) {
-    font-size: 18px;
-}
-nav li:nth-child(1):hover {
-    color: black;
+.brand {
+    margin-left: 10px;
 }
 main {
     padding-top: 60px;
 }
 iframe {
     width: 100%;
-    display: none;
 }

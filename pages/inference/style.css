@@ -1,6 +1,7 @@
 html, body {
     padding: 0;
     margin: 0;
+    background-color: #f7f7ff;
 }
 * {
     font-family: 'Open Sans', sans-serif;
@@ -10,18 +11,30 @@ html, body {
 }
 .upload-blk {
     display: table;
-    margin: 50px 20% 20px 20%;
-    width: 60%;
+    padding: 50px 20% 20px 20%;
+    width: 100%;
 }
 .result-blk {
-    margin: 0 auto;
-    width: 420px;
+    padding: 30px 20% 50px 20%;
+    width: 100%;
+    text-align: center;
+    display: table;
+    /* display: none; */
+}
+#progress {
     display: none;
+}
+.result {
+    /* display: none; */
+}
+canvas {
+    width: 100%;
+    height: 300px;
 }
 .preview {
     position: relative;
-    width: 400px;
-    height: 400px;
+    width: 30vw;
+    height: 30vw;
     border: 1.5px black solid;
     text-align: center;
     float: left;
@@ -36,15 +49,18 @@ html, body {
     transform: translate(-50%, -50%);
 }
 .preview img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 .setting {
     position: relative;
-    margin-left: 50px;
-    width: 400px;
-    height: 400px;
+    margin-left: 5vw;
+    width: 20vw;
+    height: 30vw;
 }
 .file {
     width: calc(100% - 2px);
@@ -60,7 +76,7 @@ html, body {
 }
 .file div:nth-child(1) {
     float: left;
-    width: calc(65% - 21px);
+    width: calc(65% - 1px);
     padding: 0 10px;
     border-right: 1px #aaa solid;
 }
@@ -74,64 +90,61 @@ html, body {
 input[type=file] {
     display: none;
 }
-select {
-    display: block;
-    width: 100%;
-    height: 30px;
-    -webkit-appearance: menulist-button;
+.select {
     margin: 20px 0;
-    font-size: 18px;
-    color: #424242;
 }
-button {
+.waves-effect {
     position: absolute;
     bottom: 0;
-    display: block;
-    padding: 5px 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 60%;
     height: 40px;
-    border-radius: 5px;
-    background: #32bd9a;
-    border: none;
+    line-height: 40px;
+    background-color: #32bd9a;
     color: white;
-    margin: 20px 20%;
-    font-size: 16px;
     cursor: pointer;
 }
-@media (max-width: 1420px) {
+@media (max-width: 1250px) {
     .upload-blk {
         display: table;
-        margin: 50px 5% 20px 5%;
-        width: 90%;
+        padding: 50px 5% 20px 5%;
+        width: 100%;
+    }
+    .result-blk {
+        padding: 50px 5% 20px 5%;
+        width: 100%;
     }
     .preview {
         width: 40vw;
         height: 40vw;
     }
     .setting {
-        width: 40vw;
+        width: 30vw;
         height: 40vw;
     }
 }
 @media (max-width: 800px) {
     .upload-blk {
-        width: 90vw;
-        margin: 50px 5vw 20px 5vw;
+        width: 100%;
+        padding: 50px 5% 20px 5%;
     }
     .result-blk {
-        width: 100vw;
+        width: 100%;
+        padding: 30px 5% 0 5%;
     }
     .preview {
         width: calc(100% - 3px);
         height: 90vw;
     }
     .setting {
-        width: 80%;
-        height: 300px;
+        width: 100%;
+        height: 400px;
         padding: 0 10%;
         margin-left: unset;
+        text-align: center;
     }
-    button {
+    /* button {
         margin: 20px 10%;
-    }
+    } */
 }

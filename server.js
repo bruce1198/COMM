@@ -158,7 +158,6 @@ class Group {
                     // }
                     // else {
                         msgbuilder += data.toString()
-                        console.log(data.toString())
                     // }
                 })
                 python.stderr.on('data', function(data) {
@@ -169,6 +168,7 @@ class Group {
                     if(code == 0) {
                         const totalTime = new Date().getTime() - startTime
                         const str = JSON.parse(msgbuilder.replace('\n', ''))
+                        console.log(str)
                         // const str = ''
                         res[0].writeHead(200, {
                             'Content-Type': 'application/json'
