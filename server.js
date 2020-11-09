@@ -181,6 +181,12 @@ class Group {
                             numOfDevices: numOfDevices
                         }))
                     }
+                    else {
+                        res[0].writeHead(500, {
+                            'Content-Type': 'application/json'
+                        })
+                        res[0].end('Error Happened!')
+                    }
                 })
             } catch(err) {
                 message = err

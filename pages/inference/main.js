@@ -195,6 +195,10 @@ $(document).ready(function() {
                 data: formdata,
                 processData: false,
                 contentType: false,
+                error: function(res) {
+                    console.log(res)
+                    $('#progress').css('display', 'none')
+                },
                 success: function(response) {
                     console.log(response)
                     //avg
