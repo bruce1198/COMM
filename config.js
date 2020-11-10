@@ -4,7 +4,7 @@ var config = {
     pythonhost: 'localhost',
     port: 9953,
     default_model: ['yolov2', 'alexnet', 'vgg16', 'vgg19'],
-    pcnn_path: '/Users/kwang/Desktop/PCNN/'
+    pcnn_path: 'C:\\Users\\kwang\\Desktop\\PCNN'
 }
 
 module.exports = config
