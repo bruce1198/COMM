@@ -57,7 +57,7 @@ class Group {
             })
             python.stdout.on('data', function (data) {
                 msgbuilder += data.toString()
-                console.log(data.toString())
+                // console.log(data.toString())
             })
             python.stderr.on('data', function(data) {
                 message = data.toString()
@@ -66,7 +66,8 @@ class Group {
             python.on('close', (code) => {
                 if(code == 0) {
                     const totalTime = new Date().getTime() - startTime
-                    const str = JSON.parse(msgbuilder.substring(0, msgbuilder.length - 1))
+                    const str = JSON.parse(msgbuilder)
+                    console.log(str)
                     res[0].writeHead(200, {
                         'Content-Type': 'application/json'
                     })
