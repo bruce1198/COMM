@@ -23,8 +23,8 @@
                   <option value="" disabled>Choose the model</option>
                   <option disabled value="yolo">Yolov2</option>
                   <option selected value="alexnet">AlexNet</option>
-                  <option disabled value="vgg16">VGG16</option>
-                  <option disabled value="vgg19">VGG19</option>
+                  <option value="vgg16">VGG16</option>
+                  <option value="vgg19">VGG19</option>
                 </select>
                 <label>Model Select</label>
             </div>
@@ -62,7 +62,14 @@
             <p>Total Time: <span id="total-time">2</span>ms</p>
             <p>I/O   Time: <span id="io-time">2</span>ms</p>
             <p>CPU   Time: <span id="cpu-time">2</span>ms</p>
-            <canvas></canvas>
+            <canvas id="origin"></canvas>
+            <canvas id="parallel"></canvas>
+            <div class="scales">
+              <div class="scale left">AlexNet</div>
+              <div class="scale left">Yolov2</div>
+              <div class="scale left">Vgg16</div>
+              <div class="scale left">Vgg19</div>
+            </div>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

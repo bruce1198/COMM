@@ -44,9 +44,9 @@ class Group {
         this.devices = []
     }
     runOrigin(type, res) {
-        var message = 'error'
+        var message = ''
         console.log('run origin!')
-        const serverPath = path.join(pcnnPath, 'model generator', 'alex.py')
+        const serverPath = path.join(pcnnPath, 'model generator', type+'.py')
         const imagePath = path.join(__dirname, 'images', 'input.jpg')
         var msgbuilder = ''
         try {
@@ -85,7 +85,7 @@ class Group {
     }
     assignJob(type, res) {
         var message = 'error'
-        console.log('assign job!')
+        console.log('run parallel')
         const dirPath =  path.join(pcnnPath, 'codegen', type)
         fs.readdir(dirPath, (err, files) => {
             if(err) {
@@ -295,28 +295,22 @@ app.get('/', (req, res) => {
 })
 
 app.post('/infer', (req, res) => {
-    // console.log(req)
-    if(req.body.model === 'alexnet') {
-        const image = req.files.photo
-        const path = __dirname + '/images/input.jpg'
-        image.mv(path, (error) => {
-            if (error) {
-                console.error(error)
-                res.writeHead(500, {
-                    'Content-Type': 'application/json'
-                })
-                res.end(JSON.stringify({ status: 'error', message: error }))
-                return
-            }
-            if(req.body.mode == 'origin')
-                group.runOrigin(req.body.model, [res])
-            else if(req.body.mode == 'parallelized')
-                group.assignJob(req.body.model, [res])
-        })
-    }
-    else {
-        res.send('Only Alexnet is acceptible!')
-    }
+    const image = req.files.photo
+    const path = __dirname + '/images/input.jpg'
+    image.mv(path, (error) => {
+        if (error) {
+            console.error(error)
+            res.writeHead(500, {
+                'Content-Type': 'application/json'
+            })
+            res.end(JSON.stringify({ status: 'error', message: error }))
+            return
+        }
+        if(req.body.mode == 'origin')
+            group.runOrigin(req.body.model, [res])
+        else if(req.body.mode == 'parallelized')
+            group.assignJob(req.body.model, [res])
+    })
 })
 
 app.get('/download/:model', (req, res) => {

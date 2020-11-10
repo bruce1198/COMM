@@ -1,165 +1,186 @@
 var resultList = {
-    'origin': [
-        {
-            total: 4220,
-            io: 3840,
-            cal: 1344
-        },
-        {
-            total: 5220,
-            io: 3840,
-            cal: 1544
-        },
-        {
-            total: 3220,
-            io: 3840,
-            cal: 1144
-        }
-    ],
-    'alexnet': [
-        {
-            total: 3220,
-            io: 3840,
-            cal: 637
-        },
-        {
-            total: 2220,
-            io: 3840,
-            cal: 687
-        },
-        {
-            total: 4220,
-            io: 3840,
-            cal: 587
-        }
-    ],
-    'yolo': [
-        {
-            total: 3220,
-            io: 3840,
-            cal: 637
-        },
-        {
-            total: 2220,
-            io: 3840,
-            cal: 687
-        },
-        {
-            total: 4220,
-            io: 3840,
-            cal: 587
-        }
-    ],
-    'vgg16': [
-        {
-            total: 3220,
-            io: 3840,
-            cal: 637
-        },
-        {
-            total: 2220,
-            io: 3840,
-            cal: 687
-        },
-        {
-            total: 4220,
-            io: 3840,
-            cal: 587
-        }
-    ],
-    'vgg19': [
-        {
-            total: 3220,
-            io: 3840,
-            cal: 637
-        },
-        {
-            total: 2220,
-            io: 3840,
-            cal: 687
-        },
-        {
-            total: 4220,
-            io: 3840,
-            cal: 587
-        }
-    ]
+    'origin': {
+        'alexnet': [
+            {
+                total: 0,
+                io: 0,
+                cal: 0
+            },
+        ],
+        'yolo': [
+            {
+                total: 5220,
+                io: 2840,
+                cal: 2437
+            },
+            {
+                total: 5220,
+                io: 2840,
+                cal: 2437
+            },
+        ],
+        'vgg16': [
+            {
+                total: 3820,
+                io: 3240,
+                cal: 637
+            },
+            {
+                total: 3820,
+                io: 3240,
+                cal: 637
+            },
+        ],
+        'vgg19': [
+            {
+                total: 3220,
+                io: 3840,
+                cal: 637
+            },
+            {
+                total: 3220,
+                io: 3840,
+                cal: 637
+            },
+        ]
+    },
+    'parallelized': {
+        'alexnet': [
+            {
+                total: 0,
+                io: 0,
+                cal: 0
+            },
+        ],
+        'yolo': [
+            {
+                total: 5220,
+                io: 2840,
+                cal: 2437
+            },
+            {
+                total: 5220,
+                io: 2840,
+                cal: 2437
+            },
+        ],
+        'vgg16': [
+            {
+                total: 3820,
+                io: 3240,
+                cal: 637
+            },
+            {
+                total: 3820,
+                io: 3240,
+                cal: 637
+            },
+        ],
+        'vgg19': [
+            {
+                total: 3220,
+                io: 3840,
+                cal: 637
+            },
+            {
+                total: 3220,
+                io: 3840,
+                cal: 637
+            },
+        ]
+    }
 }
 $(document).ready(function() {
-    var canvasWidth = $('canvas').width()
-    var canvasHeight = $('canvas').height()
-    const canvas = $('canvas')[0]
+    var canvasWidth = $('#origin').width()
+    var canvasHeight = $('#origin').height()
+    const canvas = $('#origin')[0]
     const ctx = canvas.getContext('2d')
+    const canvasp = $('#parallel')[0]
+    const ctxp = canvasp.getContext('2d')
     canvas.width = canvasWidth*2
     canvas.height = canvasHeight*2
     ctx.width = canvas.width
     ctx.height = canvas.height
+    canvasp.width = canvasWidth*2
+    canvasp.height = canvasHeight*2
+    ctxp.width = canvas.width
+    ctxp.height = canvas.height
     ctx.scale(2, 2)
-    $('.result').css('display', 'none')
+    ctxp.scale(2, 2)
+    // $('.result').css('display', 'none')
 
     $(document).on('resize', function() {
-        var canvasWidth = $('canvas').width()
-        var canvasHeight = $('canvas').height()
-        const canvas = $('canvas')[0]
-        const ctx = canvas.getContext('2d')
+        canvasWidth = $('#origin').width()
+        canvasHeight = $('@origin').height()
         canvas.width = canvasWidth*2
         canvas.height = canvasHeight*2
         ctx.width = canvas.width
         ctx.height = canvas.height
+        canvasp.width = canvasWidth*2
+        canvasp.height = canvasHeight*2
+        ctxp.width = canvas.width
+        ctxp.height = canvas.height
+        ctx.scale(2, 2)
+        ctxp.scale(2, 2)
     })
 
     draw()
 
-    function draw() {
-        ctx.fillStyle = 'white'
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+    function drawCanvas(context, list) {
+        context.fillStyle = 'white'
+        context.fillRect(0, 0, canvasWidth, canvasHeight)
 
         const max = 6000
-        ctx.save()
-        ctx.translate(-30, 0)
-        for(var model of Object.values(resultList)) {
-            ctx.translate(canvasWidth/6, 0)
-            ctx.save()
+        context.save()
+        context.translate(-30, 0)
+        for(var model of Object.values(list)) {
+            context.translate(canvasWidth/5, 0)
+            context.save()
             for(var [key, value] of Object.entries(model[0])) {
                 if(key == 'total')
-                    ctx.fillStyle = '#6699ff'
+                    context.fillStyle = '#6699ff'
                 else if(key == 'io')
-                    ctx.fillStyle = '#00e673'
+                    context.fillStyle = '#00e673'
                 else
-                    ctx.fillStyle = '#ffd633'
-                ctx.fillRect(0, canvasHeight*(1-value/max), 20, canvasHeight)
-                ctx.translate(30, 0)
+                    context.fillStyle = '#ffd633'
+                context.fillRect(0, canvasHeight*(1-value/max), 20, canvasHeight)
+                context.translate(30, 0)
             }
-            ctx.restore()
+            context.restore()
         }
-        ctx.restore()
+        context.restore()
 
-        ctx.strokeStyle = 'black'
-        ctx.lineWidth = 2
-        ctx.beginPath()
-        ctx.moveTo(0, 0)
-        ctx.lineTo(0, canvasHeight)
-        ctx.lineTo(canvasWidth, canvasHeight)
-        ctx.stroke()
+        context.strokeStyle = 'black'
+        context.lineWidth = 2
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(0, canvasHeight)
+        context.lineTo(canvasWidth, canvasHeight)
+        context.stroke()
 
-        ctx.save()
-        ctx.fillStyle = "#6699ff";
-        ctx.fillRect(canvasWidth-100, 20, 15, 15)
-        ctx.font = "14px Arial"
-        ctx.fillStyle = "black";
-        ctx.textBaseline = "hanging"
-        ctx.fillText("Total Time", canvasWidth-80, 20)
-        ctx.translate(0, 20);
-        ctx.fillStyle = "#00e673";
-        ctx.fillRect(canvasWidth-100, 20, 15, 15)
-        ctx.fillStyle = "black";
-        ctx.fillText("I/O Time", canvasWidth-80, 20)
-        ctx.translate(0, 20);
-        ctx.fillStyle = "#ffd633";
-        ctx.fillRect(canvasWidth-100, 20, 15, 15)
-        ctx.fillStyle = "black";
-        ctx.fillText("CPU Time", canvasWidth-80, 20)
-        ctx.restore()
+        context.save()
+        context.fillStyle = "#6699ff";
+        context.fillRect(canvasWidth-100, 20, 15, 15)
+        context.font = "14px Arial"
+        context.fillStyle = "black";
+        context.textBaseline = "hanging"
+        context.fillText("Total Time", canvasWidth-80, 20)
+        context.translate(0, 20);
+        context.fillStyle = "#00e673";
+        context.fillRect(canvasWidth-100, 20, 15, 15)
+        context.fillStyle = "black";
+        context.fillText("I/O Time", canvasWidth-80, 20)
+        context.translate(0, 20);
+        context.fillStyle = "#ffd633";
+        context.fillRect(canvasWidth-100, 20, 15, 15)
+        context.fillStyle = "black";
+        context.fillText("CPU Time", canvasWidth-80, 20)
+        context.restore()
+    }
+
+    function draw() {
+        drawCanvas(ctx, resultList['origin'])
+        drawCanvas(ctxp, resultList['parallelized'])
 
         requestAnimationFrame(draw)
     }
@@ -169,8 +190,24 @@ $(document).ready(function() {
         $('#previewer').attr('src', localStorage.getItem('image'))
         $('#chosen').text('Ready to Inference')
     }
+    if(localStorage.getItem('model')) {
+        $('#model').val(localStorage.getItem('model'))
+        $('#model').formSelect()
+    }
+    if(localStorage.getItem('mode')) {
+        $('#mode').val(localStorage.getItem('mode'))
+        $('#mode').formSelect()
+    }
     $('.file').click(() => {
         $('#uploader').click()
+    })
+    $('#model').on('change', function(){
+        localStorage.setItem('model', $(this).val())
+        $('#model').formSelect()
+    })
+    $('#mode').on('change', function(){
+        localStorage.setItem('mode', $(this).val())
+        $('#mode').formSelect()
     })
     $('#submit').click(() => {
         $('.result').css('display', 'none')
@@ -198,20 +235,20 @@ $(document).ready(function() {
                 success: function(response) {
                     console.log(response)
                     //avg
+                    const mode = response['mode']
+                    const model = response['model']
                     const total = response['time']
                     const io = response['msg']['load_time']
                     const cpu = response['msg']['cal_time']
-                    const len = resultList[response['model']].length
-                    if(response['mode'] != 'origin') {
-                        resultList[response['model']][0]['total'] = (resultList[response['model']][0]['total']*(len-1) + total) / len
-                        resultList[response['model']][0]['io'] = (resultList[response['model']][0]['io']*(len-1) + io) / len
-                        resultList[response['model']][0]['cal'] = (resultList[response['model']][0]['cal']*(len-1) + cpu) / len
-                        resultList[response['model']].push({
-                            total: total,
-                            io: io,
-                            cal: cpu
-                        })
-                    }
+                    const len = resultList[mode][model].length
+                    resultList[mode][model][0]['total'] = (resultList[mode][model][0]['total']*(len-1) + total) / len
+                    resultList[mode][model][0]['io'] = (resultList[mode][model][0]['io']*(len-1) + io) / len
+                    resultList[mode][model][0]['cal'] = (resultList[mode][model][0]['cal']*(len-1) + cpu) / len
+                    resultList[mode][model].push({
+                        total: total,
+                        io: io,
+                        cal: cpu
+                    })
                     $('#progress').css('display', 'none')
                     $('#class').text(response['msg']['index'])
                     $('#num').text(response['numOfDevices'])

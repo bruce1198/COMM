@@ -24,12 +24,21 @@ html, body {
 #progress {
     display: none;
 }
-.result {
-    /* display: none; */
-}
 canvas {
     width: 100%;
     height: 300px;
+    margin-top: 20px;
+    filter: drop-shadow(0 0 5px #00000070);
+}
+.scales {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    transform: translateX(10px);
+}
+.scale {
+    width: calc(20%);
 }
 .preview {
     position: relative;
