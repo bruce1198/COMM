@@ -138,28 +138,7 @@ class Group {
                     console.log(err.message)
                 })
                 python.stdout.on('data', function (data) {
-                    // if(data.toString() == 'ready\n') {
-                    //     console.log('server ready!')
-                    //     var deviceIdx = 0
-                    //     for(var i=0; i<numOfDevices; i++) {
-                    //         availableDevices[i].idx = i 
-                    //         availableDevices[i].socket.on('over', (msg)=>  {
-                    //             // console.log(msg.clientid, 'over')
-                    //             availableDevices[msg.clientid].inUse = false
-                    //         })
-                    //         availableDevices[i].inUse = true
-                    //         availableDevices[i].socket.emit('init', {
-                    //             id: `${deviceIdx}`,
-                    //             clientid: i,
-                    //             port: port,
-                    //             type: type,
-                    //         })
-                    //         deviceIdx++
-                    //     }
-                    // }
-                    // else {
-                        msgbuilder += data.toString()
-                    // }
+                    msgbuilder += data.toString()
                 })
                 python.stderr.on('data', function(data) {
                     message = data.toString()
@@ -192,21 +171,21 @@ class Group {
             } catch(err) {
                 message = err
             }
-            var deviceIdx = 0
             for(var i=0; i<numOfDevices; i++) {
-                availableDevices[i].idx = i 
+                // availableDevices[i].idx = i 
                 availableDevices[i].socket.on('over', (msg)=>  {
                     // console.log(msg.clientid, 'over')
-                    availableDevices[msg.clientid].inUse = false
+                    console.log('clientId:', msg.clientid, ', deviceId:', msg.deviceid)
+                    console.log(msg.output)
+                    availableDevices[msg.deviceid].inUse = false
                 })
                 availableDevices[i].inUse = true
                 availableDevices[i].socket.emit('init', {
-                    id: `${deviceIdx}`,
-                    clientid: i,
+                    id: `${i}`,
+                    clientid: availableDevices[i].idx,
                     port: port,
                     type: type,
                 })
-                deviceIdx++
             }
         })
     }
@@ -249,6 +228,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         group.leave(socket)
+        // console.log(group.devices)
     })
 })
 

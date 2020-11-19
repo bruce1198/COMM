@@ -16,7 +16,6 @@ if(!fs.existsSync(pcnnPath)) {
 }
 const socket = io.connect(`${host}:${port}`)
 
-device = -1
 socket.on('connect', () => {
     console.log('Connet to server')
     console.log('Please make sure the local models is same as the server\'s one')
@@ -28,29 +27,35 @@ socket.on('connect', () => {
         const port = msg.port
         const type = msg.type
         const devicePath = path.join(pcnnPath,'codegen', type, `device${deviceIdx}.py`)
-        console.log('device: '+deviceIdx)
-        console.log('port: '+port)
+        // console.log('device: '+deviceIdx)
+        // console.log('port: '+port)
         var message = 'error'
+        var msgbuilder = ''
         try {
             const python = spawn('python', [devicePath, pythonhost, port])
             python.on('error', function(err) {
                 message = err
             })
             python.stdout.on('data', function (data) {
-                console.log(data.toString())
+                msgbuilder += data.toString()
+                // console.log(data.toString())
             })
             python.stderr.on('data', function(data) {
+                message = data.toString()
                 console.log(data.toString())
             })
             python.on('close', (code) => {
-                console.log('python finish')
+                // console.log('python finish')
                 if(code == 0) {
+                    const str = JSON.parse(msgbuilder)
                     message = 'success'
+                    socket.emit('over', {
+                        deviceid: deviceIdx,
+                        clientid: clientid,
+                        output: str,
+                        msg: message
+                    })
                 }
-                socket.emit('over', {
-                    clientid: clientid,
-                    msg: message
-                })
             })
         } catch(err) {
             message = err
