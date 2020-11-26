@@ -38,7 +38,7 @@ socket.on('connect', () => {
             })
             python.stdout.on('data', function (data) {
                 msgbuilder += data.toString()
-                // console.log(data.toString())
+                console.log(data.toString())
             })
             python.stderr.on('data', function(data) {
                 message = data.toString()

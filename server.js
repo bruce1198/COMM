@@ -12,6 +12,7 @@ const io2 = require('socket.io')(server, {
     path: '/realtime'
 })
 const config = require('./config')
+const table = require('./table')
 
 const serverhost = config.serverhost
 const port = config.port
@@ -66,8 +67,14 @@ class Group {
             python.on('close', (code) => {
                 if(code == 0) {
                     const totalTime = new Date().getTime() - startTime
-                    const str = JSON.parse(msgbuilder)
-                    console.log(str)
+                    var str = {}
+                    try {
+                        str = JSON.parse(msgbuilder)
+                        str['class'] = table[str['index']]
+                        console.log(str)
+                    } catch(e) {
+
+                    }
                     res[0].writeHead(200, {
                         'Content-Type': 'application/json'
                     })
@@ -147,9 +154,14 @@ class Group {
                 python.on('close', (code) => {
                     if(code == 0) {
                         const totalTime = new Date().getTime() - startTime
-                        const str = JSON.parse(msgbuilder.replace('\n', ''))
-                        console.log(str)
-                        // const str = ''
+                        var str = {}
+                        try {
+                            str = JSON.parse(msgbuilder)
+                            str['class'] = table[str['index']]
+                            console.log(str)
+                        } catch(e) {
+                            
+                        }
                         res[0].writeHead(200, {
                             'Content-Type': 'application/json'
                         })
