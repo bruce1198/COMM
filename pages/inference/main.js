@@ -254,9 +254,9 @@ $(document).ready(function() {
                         cal: cpu
                     })
                     $('#progress').css('display', 'none')
-                    $('#class').text(response['msg']['index'])
+                    $('#class').text(response['msg']['class'])
                     $('#num').text(response['numOfDevices'])
-                    $('#total-time').text(total)
+                    // $('#total-time').text(total)
                     $('#io-time').text(io)
                     $('#cpu-time').text(cpu)
                     $('.result').fadeIn()
