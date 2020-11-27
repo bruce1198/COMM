@@ -47,7 +47,10 @@ socket.on('connect', () => {
             python.on('close', (code) => {
                 // console.log('python finish')
                 if(code == 0) {
-                    const str = JSON.parse(msgbuilder)
+                    let str = {}
+                    try {
+                        str = JSON.parse(msgbuilder)
+                    } catch(e) {}
                     message = 'success'
                     socket.emit('over', {
                         deviceid: deviceIdx,
