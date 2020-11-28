@@ -1,5 +1,5 @@
 let cnt = 0
-let calTime = [0]
+let doneList = []
 $(document).ready(function() {
 
     const socket = io({
@@ -9,25 +9,28 @@ $(document).ready(function() {
     socket.on('connect', () => {
         console.log('Connect to server')
         socket.on('update', (info) => {
-            console.log(info)
-            cnt++;
-            $('#devices').append(
-                $('<div></div>').html(`
-                <p>Device ${info['deviceid']}:</p>
-                <p>Calculation Time: <span id="cpu-time">${info['output']['cal']}</span>ms</p>
-              `)
-            )
-            if(cnt==info['total']) {
-                $('#progress').css('display', 'none')
-                $('.result').fadeIn()
+            // console.log(info)
+            if(!doneList.includes(info['deviceid'])) {
+                cnt++;
+                doneList.push(info['deviceid'])
+                $('#devices').append(
+                    $('<div></div>').html(`
+                    <p>Device ${info['deviceid']}:</p>
+                    <p>Calculation Time: <span id="cpu-time">${info['output']['cal']}</span>ms</p>
+                  `)
+                )
+                if(cnt==info['total']) {
+                    $('#progress').css('display', 'none')
+                    $('.result').fadeIn()
+                }
             }
         })
         socket.on('updateOrigin', (info) => {
-            console.log(info)
+            // console.log(info)
             cnt++;
             $('#class').text(info['output']['class'])
             $('#num').text(1)
-            $('#devices').append(
+            $('#devices').html(
                 $('<div></div>').html(`
                 <p>Device 0:</p>
                 <p>Calculation Time: <span id="cpu-time">${info['output']['cal_time']}</span>ms</p>
@@ -69,6 +72,7 @@ $(document).ready(function() {
     })
     $('#submit').click(() => {
         cnt = 0;
+        doneList = []
         $('#devices').empty()
         $('.result').css('display', 'none')
         $('#progress').css('display', 'inline-block')
