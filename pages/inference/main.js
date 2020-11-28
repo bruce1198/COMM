@@ -26,7 +26,7 @@ $(document).ready(function() {
             }
         })
         socket.on('updateOrigin', (info) => {
-            // console.log(info)
+            // console.log(info)`
             cnt++;
             $('#class').text(info['output']['class'])
             $('#num').text(1)
