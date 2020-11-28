@@ -4,7 +4,6 @@ const fileupload = require('express-fileupload')
 const server = require('http').createServer(app)
 const { spawn } = require('child_process')
 const path = require('path')
-const ss = require('socket.io-stream')
 const fs = require('fs')
 const download = require('download-git-repo')
 const io = require('socket.io')(server)
@@ -52,49 +51,84 @@ class Group {
     runOrigin(type, res) {
         var message = ''
         console.log('run origin!')
-        const serverPath = path.join(pcnnPath, 'model generator', type+'.py')
-        const imagePath = path.join(__dirname, 'images', 'input.jpg')
-        var msgbuilder = ''
-        try {
-            const startTime = new Date().getTime()
-            const python = spawn('python', [serverPath, imagePath])
-            python.on('error', function(err) {
-                message = err
-            })
-            python.stdout.on('data', function (data) {
-                msgbuilder += data.toString()
-                // console.log(data.toString())
-            })
-            python.stderr.on('data', function(data) {
-                message = data.toString()
-                console.log(data.toString())
-            })
-            python.on('close', (code) => {
-                if(code == 0) {
-                    const totalTime = new Date().getTime() - startTime
-                    var str = {}
-                    try {
-                        str = JSON.parse(msgbuilder)
-                        str['class'] = table[str['index']]
-                        console.log(str)
-                    } catch(e) {
-
-                    }
-                    res[0].writeHead(200, {
-                        'Content-Type': 'application/json'
-                    })
-                    res[0].end(JSON.stringify({
-                        model: type,
-                        mode: 'origin',
-                        msg: str,
-                        time: totalTime,
-                        numOfDevices: 1
-                    }))
-                }
-            })
-        } catch(err) {
-            message = err
+        var available = 0
+        var availableDevices
+        for(var i=0; i<this.devices.length; i++) {
+            if(!this.devices[i].inUse) {
+                available++
+                availableDevices = this.devices[i]
+            }
         }
+        if(available < 1) {
+            console.log('Num of available devices is not enough to assign the inference!')
+            message = 'Num of available devices is not enough to assign the inference!'
+            res[0].status(200).json({
+                model: type,
+                msg: message
+            })
+            return 
+        }
+        const path = __dirname + '/images/input.jpg'
+        const buf = fs.readFileSync(path)
+        availableDevices.socket.on('overOrigin', (msg)=>  {
+            // console.log(msg.clientid, 'over')
+            console.log(msg.output)
+            let info = msg
+            info['total'] = 1
+            availableDevices.inUse = false
+            // console.log(infoGroup)
+            for(let socket of infoGroup) {
+                socket.emit('updateOrigin', info)
+            }
+        })
+        availableDevices.inUse = true
+        availableDevices.socket.emit('initOrigin', {
+            image: buf.toString('base64'),
+            type: type,
+        })
+        // const serverPath = path.join(pcnnPath, 'model generator', type+'.py')
+        // const imagePath = path.join(__dirname, 'images', 'input.jpg')
+        // var msgbuilder = ''
+        // try {
+        //     const startTime = new Date().getTime()
+        //     const python = spawn('python', [serverPath, imagePath])
+        //     python.on('error', function(err) {
+        //         message = err
+        //     })
+        //     python.stdout.on('data', function (data) {
+        //         msgbuilder += data.toString()
+        //         // console.log(data.toString())
+        //     })
+        //     python.stderr.on('data', function(data) {
+        //         message = data.toString()
+        //         console.log(data.toString())
+        //     })
+        //     python.on('close', (code) => {
+        //         if(code == 0) {
+        //             const totalTime = new Date().getTime() - startTime
+        //             var str = {}
+        //             try {
+        //                 str = JSON.parse(msgbuilder)
+        //                 str['class'] = table[str['index']]
+        //                 console.log(str)
+        //             } catch(e) {
+
+        //             }
+        //             res[0].writeHead(200, {
+        //                 'Content-Type': 'application/json'
+        //             })
+        //             res[0].end(JSON.stringify({
+        //                 model: type,
+        //                 mode: 'origin',
+        //                 msg: str,
+        //                 time: totalTime,
+        //                 numOfDevices: 1
+        //             }))
+        //         }
+        //     })
+        // } catch(err) {
+        //     message = err
+        // }
     }
     assignJob(type, res) {
         var message = 'error'

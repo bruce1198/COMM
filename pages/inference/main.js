@@ -13,8 +13,24 @@ $(document).ready(function() {
             cnt++;
             $('#devices').append(
                 $('<div></div>').html(`
-                <p>Device: ${info['deviceid']}</p>
+                <p>Device ${info['deviceid']}:</p>
                 <p>Calculation Time: <span id="cpu-time">${info['output']['cal']}</span>ms</p>
+              `)
+            )
+            if(cnt==info['total']) {
+                $('#progress').css('display', 'none')
+                $('.result').fadeIn()
+            }
+        })
+        socket.on('updateOrigin', (info) => {
+            console.log(info)
+            cnt++;
+            $('#class').text(info['output']['class'])
+            $('#num').text(1)
+            $('#devices').append(
+                $('<div></div>').html(`
+                <p>Device 0:</p>
+                <p>Calculation Time: <span id="cpu-time">${info['output']['cal_time']}</span>ms</p>
               `)
             )
             if(cnt==info['total']) {
