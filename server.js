@@ -11,6 +11,10 @@ const io = require('socket.io')(server)
 const io2 = require('socket.io')(server, {
     path: '/realtime'
 })
+let infoGroup = []
+const io3 = require('socket.io')(server, {
+    path: '/device'
+})
 const config = require('./config')
 const table = require('./table')
 
@@ -36,6 +40,7 @@ class Device {
         this.inUse = false
         this.socket = socket
         this.idx = pk
+        this.info = {}
     }
 }
 
@@ -138,7 +143,6 @@ class Group {
             const imagePath = path.join(__dirname, 'images', 'input.jpg')
             var msgbuilder = ''
             try {
-                const startTime = new Date().getTime()
                 const python = spawn('python', [serverPath, numOfDevices, serverhost, port, imagePath])
                 python.on('error', function(err) {
                     message = err
@@ -153,7 +157,6 @@ class Group {
                 })
                 python.on('close', (code) => {
                     if(code == 0) {
-                        const totalTime = new Date().getTime() - startTime
                         var str = {}
                         try {
                             str = JSON.parse(msgbuilder)
@@ -162,22 +165,16 @@ class Group {
                         } catch(e) {
                             
                         }
-                        res[0].writeHead(200, {
-                            'Content-Type': 'application/json'
-                        })
-                        res[0].end(JSON.stringify({
+
+                        res[0].json({
                             model: type,
                             mode: 'parallelized',
                             msg: str,
-                            time: totalTime,
                             numOfDevices: numOfDevices
-                        }))
+                        })
                     }
                     else {
-                        res[0].writeHead(500, {
-                            'Content-Type': 'application/json'
-                        })
-                        res[0].end('Error Happened!')
+                        res[0].json({message: 'Error Happened!'})
                     }
                 })
             } catch(err) {
@@ -187,9 +184,14 @@ class Group {
                 // availableDevices[i].idx = i 
                 availableDevices[i].socket.on('over', (msg)=>  {
                     // console.log(msg.clientid, 'over')
-                    console.log('clientId:', msg.clientid, ', deviceId:', msg.deviceid)
                     console.log(msg.output)
+                    let info = msg
+                    info['total'] = numOfDevices
                     availableDevices[msg.deviceid].inUse = false
+                    // console.log(infoGroup)
+                    for(let socket of infoGroup) {
+                        socket.emit('update', info)
+                    }
                 })
                 availableDevices[i].inUse = true
                 availableDevices[i].socket.emit('init', {
@@ -262,10 +264,10 @@ io2.on('connection', function (socket) {
             devices.push({
                 inUse: device.inUse,
                 socketid: device.socket.id,
-                addr: device.socket.handshake.address
+                addr: device.socket.handshake.address,
+                info: device.info
             })
         })
-        socket.emit('update', devices)
     }, 1000)
 
     socket.on('remove-client', function(clientId) {
@@ -276,6 +278,22 @@ io2.on('connection', function (socket) {
         socket.send(message)
     })
 
+})
+
+io3.on('connection', function(socket) {
+    infoGroup.push(socket)
+    socket.on('disconnect', function() {
+        var index = -1
+        for(var i=0; i<infoGroup.length; i++) {
+            if(socket.id === infoGroup[i].id) {
+                index = i
+                break
+            }
+        }
+        if(index !== -1) {
+            infoGroup.splice(index, 1)
+        }
+    })
 })
 
 app.use(

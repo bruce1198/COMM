@@ -21,6 +21,9 @@ html, body {
     display: table;
     /* display: none; */
 }
+.result {
+    display: none;
+}
 #progress {
     display: none;
 }
@@ -29,6 +32,9 @@ canvas {
     height: 300px;
     margin-top: 20px;
     filter: drop-shadow(0 0 5px #00000070);
+}
+#devices p {
+    font-size: 30px;
 }
 .scales {
     width: 100%;

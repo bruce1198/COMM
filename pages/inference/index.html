@@ -58,10 +58,12 @@
         <div class="result">
             <h2>Result</h2>
             <p style="font-size: 60px;">Class: <span id="class" style="color: #2e8de6;">587</span></p>
-            <p># of Device: <span id="num">2</span></p>
+            <p style="font-size: 40px;">Number of Device: <span id="num">2</span></p>
             <!-- <p>Total Time: <span id="total-time">2</span>ms</p> -->
-            <p>I/O   Time: <span id="io-time">2</span>ms</p>
-            <p>CPU   Time: <span id="cpu-time">2</span>ms</p>
+            <div id="devices">
+              <p>Device: 0</p>
+              <p>CPU Time: <span id="cpu-time">2</span>ms</p>
+            </div>
             <canvas id="origin"></canvas>
             <canvas id="parallel"></canvas>
             <div class="scales">
@@ -72,6 +74,7 @@
             </div>
         </div>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./main.js"></script>
