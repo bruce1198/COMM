@@ -224,7 +224,7 @@ class Group {
                     availableDevices[msg.deviceid].inUse = false
                     // console.log(infoGroup)
                     for(let socket of infoGroup) {
-                        socket.emit('update', info)
+                        socket.emit('updateInfo', info)
                     }
                 })
                 availableDevices[i].inUse = true
@@ -302,7 +302,8 @@ io2.on('connection', function (socket) {
                 info: device.info
             })
         })
-    }, 1000)
+        socket.emit('update', devices)
+    }, 100)
 
     socket.on('remove-client', function(clientId) {
         group.remove(clientId)

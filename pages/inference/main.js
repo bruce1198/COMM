@@ -8,7 +8,7 @@ $(document).ready(function() {
     
     socket.on('connect', () => {
         console.log('Connect to server')
-        socket.on('update', (info) => {
+        socket.on('updateInfo', (info) => {
             // console.log(info)
             if(!doneList.includes(info['deviceid'])) {
                 cnt++;

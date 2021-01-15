@@ -5,6 +5,7 @@ const socket = io({
 socket.on('connect', () => {
     // console.log('Connect to server')
     socket.on('update', (devices) => {
+        // console.log('update')
         $('ul').empty()
         var i = 1
         devices.forEach(device => {
